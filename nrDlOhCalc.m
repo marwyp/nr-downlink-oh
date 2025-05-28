@@ -20,6 +20,12 @@ csirsDensity = 3;           % frequence desnsity: 1, 3 or 0.5
 csirsNumRb = 5;             % number of resource blocks; 1 : bw
 csirsCdmType = "noCDM";     % "noCDM", "FD-CDM2", "CDM-4", "CDM-8"
 
+% DM-RS
+dmrsConfType = 1;           % configuration type: 1 or 2
+dmrsGroupsWithoutData = 1;  % 1, 2, 3
+dmrsAdditionalPosition = 0; % 0, 1, 2 or 3
+dmrsLength = 1;             % 1 or 2
+
 %% 5G NR Information
 % constants
 nFrames = 16;               % maximum SSB period
@@ -49,6 +55,11 @@ assert(ismember(csirsDensity, [1, 3, 0.5]));
 assert(csirsNumRb * 12 < nReSymbol);
 assert(ismember(csirsCdmType, ["noCDM", "FD-CDM2", "CDM-4", "CDM-8"]));
 
+assert(ismember(dmrsConfType, [1, 2]));
+assert(ismember(dmrsGroupsWithoutData, [1, 2, 3]));
+assert(ismember(dmrsAdditionalPosition, [0, 1, 2, 3]));
+assert(ismember(dmrsLength, [1, 2]));
+
 %% OverHead Calculation
 % SSB
 nSsbSymbolsBurst = 4 * nSSB;
@@ -72,7 +83,15 @@ nCsirsRe = nCsirsSymbols * csirsNumRb * csirsDensity ...
 ohCsirs = nCsirsRe / nRe;
 disp("CSI-RS OH        = " + ohCsirs * 100 + "%");
 
+% DM-RS
+nDmrsInRb = dmrsInSymbol(dmrsConfType, dmrsGroupsWithoutData)...
+    * dmrsLength * (dmrsAdditionalPosition + 1);
+nPdschRb = floor((nRe - nPdcchRe - nSsbRe) / (12 * 14));
+nDmrsRe = nDmrsInRb * nPdschRb;
+ohDmrs = nDmrsRe / nRe;
+disp("DM-RS OH         = " + ohDmrs * 100 + "%");
+
 % Overall OH
-nOhRe = nSsbRe + nPdcchRe + nCsirsRe;
+nOhRe = nSsbRe + nPdcchRe + nCsirsRe + nDmrsRe;
 ohTotal = nOhRe / nRe;
 disp("Total OH         = " + ohTotal * 100 + "%");
