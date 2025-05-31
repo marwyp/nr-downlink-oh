@@ -70,14 +70,14 @@ disp("SSB OH           = " + ohSsb* 100 + "%");
 
 % CORESET / PDCCH
 nPdcchSlots = nSlots / pdcchPeriod;
-nPdcchSymbols = nSlots * coresetDuration;
+nPdcchSymbols = nPdcchSlots * coresetDuration;
 nPdcchRe = nPdcchSymbols * coresetRBs * 12;
 ohPdcch = nPdcchRe / nRe;
 disp("CORESET/PDCCH OH = " + ohPdcch* 100 + "%");
 
 % CSI-RS
 nCsirsSlots = nSlots / csirsPeriod;
-nCsirsSymbols = nSlots;
+nCsirsSymbols = nCsirsSlots;
 nCsirsRe = nCsirsSymbols * csirsNumRb * csirsDensity ...
     * csrirsCdmToRe(csirsCdmType);
 ohCsirs = nCsirsRe / nRe;
